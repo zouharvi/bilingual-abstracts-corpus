@@ -6,10 +6,17 @@ The data was filtered for duplicates and missing entries, ensuring that every re
 Additionally, records of published papers which are indexed by SemanticScholar contain the respective link.
 The dataset was created from September 2022 image of the Biblio database and is stored in JSONL format, with each line corresponding to one record.
 
-You can download the dataset [here on Lindat](https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-4922) or directly from the command-line:
+You can download the dataset [on Lindat](https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-4922), directly from the command-line, from [huggingface](https://huggingface.co/datasets/ufal/bilingual-abstracts-corpus):
 
-```
+```bash
+# if you want the raw data:
 wget https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-4922/corpus.jsonl
+```
+
+```python3
+# from Python:
+from datasets import load_dataset
+dataset = load_dataset("ufal/bilingual-abstracts-corpus")
 ```
 
 ## Reproducing the dataset
