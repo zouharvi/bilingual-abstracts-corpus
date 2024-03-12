@@ -28,12 +28,12 @@ You can run `statistics.py` to get an overview for the dataset:
 
 |||
 |-|-|
-|Total records                      | 2659  |
-|Average sents (words) per abstract | 4.0 (96.0)  |
-|Total sents (words) (en)           | 11k (255k)  |
-|Langs                              | en 2086 (78.5%), cs 548 (20.6%), ru 13 (0.5%), ... (long tail of less-represented languages)  |
+|Total records                      | 3079  |
+|Average sents (words) per abstract | 4.1 (98.7)  |
+|Total sents (words) (en)           | 12k (303771)  |
+|Langs                              | en 2404 (78.1%), cs 650 (21.1%), ru 13 (0.4%), ... (long tail of less-represented languages)  |
 |Papers with S2 links               | 47.2%  |
-|Publication year                   | 2022: 65, 2021: 204, 2020: 161, 2019: 147, 2018: 173, 2017: 183, 2016: 205, 2015: 169, 2014: 187, 2013: 155, 2012: 146, 2011: 123, 2010: 146, 2009: 132, 2008: 133, 2007: 105, 2006:  113, 2005: 79, 2004: 13, 2003: 4, 2002: 5, 2001: 3, 2000: 4, 1998: 3, 1997: 1 |
+|Publication year                   | 2024: 35, 2023: 246, 2022: 197, 2021: 210, 2020: 163, 2019: 147, 2018: 173, 2017: 183, 2016: 206, 2015: 169, 2014: 187, 2013: 155, 2012: 146, 2011: 123, 2010: 146, 2009: 132, 2008: 133, 2007: 103, 2006: 113, 2005: 79, 2004: 13, 2003: 4, 2002: 5, 2001: 3, 2000: 4, 1998: 3, 1997: 1 |
 
 ## Example
 

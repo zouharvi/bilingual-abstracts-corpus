@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 import time
 import argparse
-from urllib.parse import quote
-import urllib.request
+import requests
+import requests.utils
 import json
 
 
@@ -39,15 +39,21 @@ if args.semantic_scholar_key:
 else:
     s2_headers = {}
 
-def s2_search(query, limit=30):
-    query = quote(query)
-    url_base = f"https://api.semanticscholar.org/graph/v1/paper/search?limit={limit}&fields=title,authors,paperId&query="
-    url = url_base + query
-    req = urllib.request.Request(url, headers=s2_headers)
-    data = urllib.request.urlopen(req)
-    data = data.read().decode("utf-8")
-    return json.loads(data)["data"]
+def title_hash(title):
+    title = "".join([c for c in title_en.lower() if c.isalpha() or c == " "])
+    return re.sub(r"\s+", " ", title)
 
+def s2_search(query, limit=30):
+    data = requests.get(
+        requests.utils.requote_uri(
+            f'https://api.semanticscholar.org/graph/v1/paper/search?query={query}&limit={limit}&fields=title'
+        ),
+        headers=s2_headers
+    ).json()
+    if "data" in data:
+        return data["data"]
+    else:
+        return []
 
 with open(args.data_publications, "r") as f:
     data_pub = BeautifulSoup(f.read(), "xml")
@@ -101,10 +107,10 @@ for record in tqdm(list(data_pub.find_all("Record"))[args.continue_from:]):
     authors = record.find("Field", attrs={"Name": "Author"}).text.split(";")
 
     # remove duplicates
-    title_hash = f"{title_en}|{title_cs}|{title_orig}|{authors}|{abstract_en}|{abstract_cs}|{abstract_orig}"
-    if title_hash in stored_titles:
+    title_hash_orig = f"{title_en}|{title_cs}|{title_orig}|{authors}|{abstract_en}|{abstract_cs}|{abstract_orig}"
+    if title_hash_orig in stored_titles:
         continue
-    stored_titles.add(title_hash)
+    stored_titles.add(title_hash_orig)
 
     # map language to standard 2-char format
     if lang in LANG_MAP:
@@ -146,18 +152,18 @@ for record in tqdm(list(data_pub.find_all("Record"))[args.continue_from:]):
     record_out["authors"] = [author_map[a_id] for a_id in authors]
 
     if args.semantic_scholar:
-        title_en_hash = "".join([c for c in title_en.lower() if c.isalpha()])
+        title_en_hash = title_hash(title_en)
         for paper_other in s2_search(title_en):
-            title_hash_other = "".join(
-                [c for c in paper_other["title"].lower() if c.isalpha()]
-            )
-            if title_hash_other == title_en_hash:
+            title_hash_s2 = title_hash(paper_other["title"])
+            if title_hash_s2 == title_en_hash:
                 print(
                     "Found a matching paper |",
                     title_en, "|", paper_other["title"]
                 )
                 record_out["s2_url"] = f'https://www.semanticscholar.org/paper/{paper_other["paperId"]}/'
                 break
+        # TODO: fallback lookup in Czech?
+        # TODO: catch exceptions
 
         # delay to not trigger throttle
         # by default 100 per 5 minutes -> 20 per minute -> 3s per request
